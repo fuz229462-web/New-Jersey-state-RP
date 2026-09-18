@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox RP Server | Home</title>
+    <style>
+        :root {
+            --bg-color: #0f0f15;
+            --card-bg: #1a1a24;
+            --accent-purple: #9d4edd;
+            --accent-pink: #ff75c3;
+            --text-main: #f0f0f5;
+            --text-dim: #a0a0b0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* Header / Navbar */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 10%;
+            background: rgba(15, 15, 21, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: var(--accent-purple);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+
+        nav a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--accent-pink);
+        }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 100px 20px;
+            background: radial-gradient(circle at center, rgba(157, 78, 221, 0.15) 0%, rgba(15, 15, 21, 1) 70%);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            max-width: 600px;
+            margin-bottom: 30px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-purple), #7b2cbf);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(157, 78, 221, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Feature Section */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 40px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: border-color 0.3s;
+        }
+
+        .card:hover {
+            border-color: var(--accent-purple);
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+            color: var(--accent-pink);
+        }
+
+        .card p {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+        }
+
+        /* Rules List */
+        .rules-list {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            list-style-position: inside;
+        }
+
+        .rules-list li {
+            margin-bottom: 15px;
+            color: var(--text-dim);
+        }
+
+        .rules-list strong {
+            color: var(--text-main);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">CITY<span>RP</span></div>
+        <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#rules">Rules</a></li>
+            <li><a href="https://discord.gg/" target="_blank">Discord</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <h1>Welcome to City Roleplay</h1>
+        <p>Experience realistic, immersive roleplay with custom emergency vehicles, active departments, and a dedicated community.</p>
+        <div class="btn-group">
+            <a href="https://www.roblox.com/" target="_blank" class="btn btn-primary">Play on Roblox</a>
+            <a href="https://discord.gg/" target="_blank" class="btn btn-secondary">Join Discord</a>
+        </div>
+    </section>
+
+    <div class="container" id="features">
+        <h2 class="section-title">Server Features</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Realistic Economy</h3>
+                <p>Earn money through legal civilian jobs, law enforcement roles, or run underground criminal operations.</p>
+            </div>
+            <div class="card">
+                <h3>Active First Responders</h3>
+                <p>Join the Police Department, Fire & Rescue, or Medical Services with structured ranks and custom gear.</p>
+            </div>
+            <div class="card">
+                <h3>Custom Content</h3>
+                <p>Tailored UI elements, custom vehicles, specialized gear, and dynamic server events.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="rules">
+        <h2 class="section-title">Community Rules</h2>
+        <ol class="rules-list">
+            <li><strong>Value Your Life (FearRP):</strong> You must value your character's life in life-threatening scenarios.</li>
+            <li><strong>No Random Deathmatch (RDM):</strong> Attacking or killing players without valid roleplay context is prohibited.</li>
+            <li><strong>Stay in Character:</strong> Maintain RP at all times while in-game. Use OOC chat only when necessary.</li>
+            <li><strong>Respect Community Members:</strong> Harassment, hate speech, or toxicity will result in an immediate ban.</li>
+        </ol>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 City RP Community. Not affiliated with Roblox Corporation.</p>
+    </footer>
+
+</body>
+</html>
