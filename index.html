@@ -26,6 +26,7 @@
         }
 
         html { scroll-behavior: smooth; }
+        html.no-scroll { overflow: hidden; }
 
         body {
             background-color: var(--bg-color);
@@ -37,6 +38,11 @@
         a { color: inherit; }
 
         section, .container { scroll-margin-top: 70px; }
+
+        :focus-visible {
+            outline: 2px solid var(--accent-gold);
+            outline-offset: 3px;
+        }
 
         /* ---------- Scroll progress bar ---------- */
         #progress {
@@ -136,7 +142,6 @@
             padding: 100px 20px 90px;
         }
 
-        /* Emergency light glow */
         .hero::before,
         .hero::after {
             content: '';
@@ -167,7 +172,6 @@
             50%      { opacity: 0.28; transform: scale(1.05); }
         }
 
-        /* Grid backdrop */
         .hero-grid {
             position: absolute;
             inset: 0;
@@ -186,7 +190,6 @@
             to   { background-position: 56px 56px; }
         }
 
-        /* Floating particles */
         .particles {
             position: absolute;
             inset: 0;
@@ -299,16 +302,20 @@
         .btn {
             position: relative;
             overflow: hidden;
+            display: inline-block;
             padding: 12px 28px;
             border-radius: 8px;
             text-decoration: none;
             font-weight: 600;
-            transition: transform 0.2s, box-shadow 0.2s;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
         }
 
         .btn-primary {
             background: linear-gradient(135deg, var(--accent-blue), #1b4ea0);
             color: #fff;
+            border: none;
             box-shadow: 0 4px 18px rgba(46, 111, 219, 0.35);
         }
 
@@ -339,7 +346,6 @@
         .btn-primary:hover { box-shadow: 0 8px 26px rgba(46, 111, 219, 0.55); }
         .btn-secondary:hover { border-color: var(--accent-gold); }
 
-        /* Hero entrance */
         .js .hero .badge,
         .js .hero h1,
         .js .hero .typing-line,
@@ -436,7 +442,6 @@
             transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
         }
 
-        /* Mouse-follow spotlight */
         .card::before {
             content: '';
             position: absolute;
@@ -445,6 +450,7 @@
             opacity: 0;
             transition: opacity 0.3s;
             pointer-events: none;
+            z-index: 2;
         }
 
         .card:hover {
@@ -466,28 +472,428 @@
             font-size: 0.95rem;
         }
 
-        .dept {
-            display: flex;
-            gap: 16px;
-            align-items: flex-start;
-        }
-
-        .dept .tag {
-            flex-shrink: 0;
+        .tag {
+            display: inline-block;
             font-size: 0.72rem;
             font-weight: 700;
             letter-spacing: 1px;
             padding: 5px 10px;
             border-radius: 6px;
-            background: rgba(46, 111, 219, 0.15);
+            background: rgba(11, 15, 22, 0.78);
+            backdrop-filter: blur(6px);
             color: #7dabff;
-            border: 1px solid rgba(46, 111, 219, 0.3);
+            border: 1px solid rgba(46, 111, 219, 0.45);
             transition: background 0.25s, color 0.25s;
         }
 
-        .dept:hover .tag {
+        /* ---------- Department cards ---------- */
+        .dept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 22px;
+        }
+
+        .dept-card {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            padding: 0;
+            text-align: left;
+            color: var(--text-main);
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .dept-card .thumb {
+            position: relative;
+            aspect-ratio: 16 / 10;
+            overflow: hidden;
+            background: #0e131b;
+        }
+
+        .dept-card .thumb img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+        }
+
+        .dept-card:hover .thumb img { transform: scale(1.07); }
+
+        .dept-card .thumb::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(20, 26, 36, 0) 55%, var(--card-bg) 100%);
+            pointer-events: none;
+        }
+
+        .dept-card .tag {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            z-index: 1;
+        }
+
+        .dept-card:hover .tag {
             background: var(--accent-blue);
             color: #fff;
+        }
+
+        .dept-card .info { padding: 6px 22px 24px; }
+
+        .dept-card .info h3 { margin-bottom: 6px; }
+
+        .more {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 14px;
+            color: var(--accent-gold);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .more i {
+            font-style: normal;
+            display: inline-block;
+            transition: transform 0.25s;
+        }
+
+        .dept-card:hover .more i { transform: translateX(5px); }
+
+        /* ---------- Department modal ---------- */
+        dialog.modal {
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: var(--card-bg);
+            color: var(--text-main);
+            padding: 0;
+            width: min(760px, 94vw);
+            max-height: 90vh;
+            margin: auto;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+        }
+
+        dialog.modal[open] {
+            display: flex;
+            flex-direction: column;
+            animation: modalIn 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        dialog.modal.closing { animation: modalOut 0.18s ease forwards; }
+
+        dialog.modal::backdrop {
+            background: rgba(5, 8, 14, 0.78);
+            backdrop-filter: blur(6px);
+        }
+
+        dialog.modal[open]::backdrop { animation: fadeIn 0.3s ease; }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: translateY(26px) scale(0.97); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes modalOut {
+            to { opacity: 0; transform: translateY(14px) scale(0.98); }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .modal-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 3;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(11, 15, 22, 0.78);
+            border: 1px solid var(--line);
+            color: #fff;
+            font-size: 1.3rem;
+            line-height: 1;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .modal-close:hover {
+            background: var(--accent-red);
+            transform: rotate(90deg);
+        }
+
+        .modal-media {
+            position: relative;
+            height: 260px;
+            flex-shrink: 0;
+            background: #0e131b;
+        }
+
+        .modal-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .modal-media::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(20, 26, 36, 0) 35%, var(--card-bg) 100%);
+        }
+
+        .modal-title {
+            position: absolute;
+            left: 30px;
+            bottom: 14px;
+            z-index: 2;
+        }
+
+        .modal-title h2 {
+            font-size: 1.9rem;
+            line-height: 1.2;
+            margin-top: 8px;
+        }
+
+        .modal-body {
+            padding: 6px 30px 30px;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+        }
+
+        .modal-body .lead {
+            color: var(--text-dim);
+            margin-bottom: 8px;
+        }
+
+        .modal-body h4 {
+            margin: 24px 0 10px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent-gold);
+        }
+
+        .duty-list {
+            list-style: none;
+        }
+
+        .duty-list li {
+            position: relative;
+            padding: 6px 0 6px 26px;
+            color: var(--text-dim);
+        }
+
+        .duty-list li::before {
+            content: '';
+            position: absolute;
+            left: 4px;
+            top: 15px;
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            background: var(--accent-blue);
+            transform: rotate(45deg);
+        }
+
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .chip {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 6px 10px;
+        }
+
+        .chip b { color: var(--accent-gold); margin-right: 4px; }
+
+        .modal-note {
+            margin-top: 24px;
+            font-size: 0.88rem;
+            color: var(--text-dim);
+            padding: 12px 14px;
+            border-left: 3px solid var(--accent-blue);
+            background: rgba(46, 111, 219, 0.07);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .modal-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 26px;
+        }
+
+        /* ---------- 10-Codes ---------- */
+        .codes-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .search {
+            position: relative;
+            flex: 1 1 260px;
+            max-width: 380px;
+        }
+
+        .search svg {
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            stroke: var(--text-dim);
+            fill: none;
+            stroke-width: 2;
+            pointer-events: none;
+        }
+
+        .search input {
+            width: 100%;
+            padding: 12px 14px 12px 42px;
+            background: var(--card-bg);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .search input::placeholder { color: var(--text-dim); }
+
+        .search input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(46, 111, 219, 0.2);
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tab {
+            background: var(--card-bg);
+            color: var(--text-dim);
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            padding: 7px 16px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+        }
+
+        .tab:hover { color: var(--text-main); border-color: rgba(255, 255, 255, 0.2); }
+
+        .tab.active {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: #fff;
+        }
+
+        .codes-count {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin: 14px 2px 4px;
+        }
+
+        .code-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 26px 0 12px;
+            font-size: 1.05rem;
+            color: var(--text-main);
+        }
+
+        .code-group small {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            background: rgba(240, 180, 41, 0.12);
+            border-radius: 999px;
+            padding: 2px 9px;
+        }
+
+        .codes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 12px;
+        }
+
+        .code {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: var(--card-bg);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 12px 14px;
+            animation: codeIn 0.4s ease backwards;
+            animation-delay: calc(var(--d, 0) * 20ms);
+            transition: border-color 0.2s, transform 0.2s;
+        }
+
+        .code:hover {
+            border-color: rgba(240, 180, 41, 0.45);
+            transform: translateX(3px);
+        }
+
+        .code .c {
+            flex-shrink: 0;
+            min-width: 52px;
+            font-weight: 700;
+            color: var(--accent-gold);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .code .d {
+            color: var(--text-dim);
+            font-size: 0.92rem;
+            line-height: 1.4;
+        }
+
+        .code.urgent {
+            border-color: rgba(229, 72, 77, 0.55);
+            background: rgba(229, 72, 77, 0.09);
+            animation: codeIn 0.4s ease backwards, urgentPulse 2s ease-in-out 0.6s infinite;
+            animation-delay: calc(var(--d, 0) * 20ms), 0.6s;
+        }
+
+        .code.urgent .c { color: var(--accent-red); }
+        .code.urgent .d { color: var(--text-main); font-weight: 600; }
+
+        @keyframes codeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes urgentPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(229, 72, 77, 0); }
+            50%      { box-shadow: 0 0 18px 0 rgba(229, 72, 77, 0.35); }
+        }
+
+        .no-codes {
+            text-align: center;
+            color: var(--text-dim);
+            padding: 40px 0;
         }
 
         /* ---------- Rules ---------- */
@@ -570,21 +976,19 @@
 
         #toTop:hover { border-color: var(--accent-gold); }
 
-        /* ---------- Scroll reveal ---------- */
-        .js .reveal {
-            opacity: 0;
-            transform: translateY(32px);
-            transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
-            transition-delay: calc(var(--i, 0) * 90ms);
-        }
+        /* ---------- Scroll reveal (animation-based so hover effects keep working) ---------- */
+        .js .reveal { opacity: 0; }
 
         .js .reveal.in {
             opacity: 1;
-            transform: translateY(0);
+            animation: revealIn 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+            animation-delay: calc(var(--i, 0) * 90ms);
         }
 
-        /* Cards keep their own hover transform once revealed */
-        .js .card.reveal.in { transition-delay: 0ms; }
+        @keyframes revealIn {
+            from { opacity: 0; transform: translateY(32px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
 
         /* ---------- Mobile ---------- */
         @media (max-width: 720px) {
@@ -614,6 +1018,11 @@
             .hero h1 { font-size: 2.2rem; }
             .hero::before, .hero::after { width: 320px; height: 320px; }
             .stats { gap: 30px; }
+            .modal-media { height: 180px; }
+            .modal-title { left: 20px; }
+            .modal-title h2 { font-size: 1.5rem; }
+            .modal-body { padding: 4px 20px 24px; }
+            .search { max-width: none; }
         }
 
         /* ---------- Respect reduced motion ---------- */
@@ -645,6 +1054,7 @@
         <ul class="nav-links" id="navLinks">
             <li><a href="#about">About</a></li>
             <li><a href="#departments">Departments</a></li>
+            <li><a href="#codes">10-Codes</a></li>
             <li><a href="#rules">Rules</a></li>
             <li><a href="#join">Join</a></li>
         </ul>
@@ -659,7 +1069,7 @@
         <p>A strict ER:LC roleplay server built on realistic roleplay, immersive law enforcement, and a community that takes it seriously.</p>
         <div class="btn-group">
             <a href="https://discord.gg/JdjQtZT4Nn" target="_blank" rel="noopener" class="btn btn-primary">Join the Discord</a>
-            <a href="#rules" class="btn btn-secondary">Read the Rules</a>
+            <a href="#departments" class="btn btn-secondary">Explore Departments</a>
         </div>
     </section>
 
@@ -680,7 +1090,7 @@
             </div>
             <div class="card reveal" style="--i:1">
                 <h3>Immersive Law Enforcement</h3>
-                <p>Proper traffic stops, pursuits handled by policy, radio discipline, and callsigns used the way real units would.</p>
+                <p>Proper traffic stops, pursuits handled by policy, radio discipline, and 10-codes used the way real units would.</p>
             </div>
             <div class="card reveal" style="--i:2">
                 <h3>Structured Departments</h3>
@@ -703,51 +1113,22 @@
 
     <div class="container" id="departments">
         <h2 class="section-title reveal">Departments</h2>
-        <p class="section-sub reveal">Pick a role and work your way up.</p>
-        <div class="grid">
-            <div class="card dept reveal" style="--i:0">
-                <span class="tag">NJSP</span>
-                <div>
-                    <h3>State Police</h3>
-                    <p>Highway patrol, pursuits, and statewide response. The backbone of the server.</p>
-                </div>
+        <p class="section-sub reveal">Click a department to see what it does and how to get involved.</p>
+        <div class="dept-grid" id="deptGrid"></div>
+    </div>
+
+    <div class="container" id="codes">
+        <h2 class="section-title reveal">Official 10-Codes</h2>
+        <p class="section-sub reveal">Use these standard radio codes during all official LEO, EMS, and Dispatch communications.</p>
+        <div class="codes-controls reveal">
+            <div class="search">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
+                <input type="search" id="codeSearch" placeholder="Search a code or meaning (e.g. 10-80, pursuit)" aria-label="Search 10-codes" autocomplete="off">
             </div>
-            <div class="card dept reveal" style="--i:1">
-                <span class="tag">PD</span>
-                <div>
-                    <h3>Police Department</h3>
-                    <p>City patrol, traffic enforcement, and responding to calls for service.</p>
-                </div>
-            </div>
-            <div class="card dept reveal" style="--i:2">
-                <span class="tag">FIRE</span>
-                <div>
-                    <h3>Fire &amp; EMS</h3>
-                    <p>Fire suppression, extrication, and medical response on scene.</p>
-                </div>
-            </div>
-            <div class="card dept reveal" style="--i:3">
-                <span class="tag">DOT</span>
-                <div>
-                    <h3>Department of Transportation</h3>
-                    <p>Road closures, scene safety, and clearing wrecks off the highway.</p>
-                </div>
-            </div>
-            <div class="card dept reveal" style="--i:4">
-                <span class="tag">CIV</span>
-                <div>
-                    <h3>Civilian Operations</h3>
-                    <p>The other side of the roleplay — drivers, businesses, and everyone in between.</p>
-                </div>
-            </div>
-            <div class="card dept reveal" style="--i:5">
-                <span class="tag">STAFF</span>
-                <div>
-                    <h3>Staff Team</h3>
-                    <p>Session hosts and moderators keeping the ruleset enforced. Applications open periodically.</p>
-                </div>
-            </div>
+            <div class="tabs" id="codeTabs" role="group" aria-label="Filter 10-codes by category"></div>
         </div>
+        <p class="codes-count" id="codeCount" aria-live="polite"></p>
+        <div id="codesOut"></div>
     </div>
 
     <div class="container" id="rules">
@@ -757,7 +1138,7 @@
             <li class="reveal" style="--i:0"><strong>Value Your Life (FearRP):</strong> Act like your character wants to survive. Don't run at an armed officer.</li>
             <li class="reveal" style="--i:1"><strong>No Random Deathmatch (RDM):</strong> Killing or ramming without roleplay context is an instant removal.</li>
             <li class="reveal" style="--i:2"><strong>Stay in Character:</strong> Keep RP going in-session. Use OOC channels for anything out of character.</li>
-            <li class="reveal" style="--i:3"><strong>Follow Department Policy:</strong> Pursuits, use of force, and callsigns are done by the book, not improvised.</li>
+            <li class="reveal" style="--i:3"><strong>Follow Department Policy:</strong> Pursuits, use of force, and radio codes are done by the book, not improvised.</li>
             <li class="reveal" style="--i:4"><strong>Respect Everyone:</strong> Harassment, slurs, or toxicity results in an immediate permanent ban.</li>
             <li class="reveal" style="--i:5"><strong>Listen to Staff:</strong> Staff decisions are final in-session. Appeal in Discord, not in chat.</li>
         </ol>
@@ -778,9 +1159,329 @@
 
     <button id="toTop" aria-label="Back to top">&uarr;</button>
 
+    <dialog class="modal" id="deptModal" aria-labelledby="modalTitle"></dialog>
+
     <script>
         (function () {
             var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var DISCORD = 'https://discord.gg/JdjQtZT4Nn';
+
+            function esc(s) {
+                return String(s)
+                    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+            }
+
+            /* =========================================================
+               DATA — edit this section to change the site content
+               ========================================================= */
+
+            /* Official 10-codes: [code, meaning] */
+            var CODES = [
+                { id: 'general', title: 'General Status & Radio Commands', short: 'General', items: [
+                    ['10-0', 'Visual contact lost'],
+                    ['10-1', 'Change frequency'],
+                    ['10-3', 'Radio silence'],
+                    ['10-4', 'Copy / Understood'],
+                    ['10-5', 'On break'],
+                    ['10-6', 'Busy'],
+                    ['10-7', 'Out of service'],
+                    ['10-8', 'In service'],
+                    ['10-9', 'Repeat last transmission'],
+                    ['10-12', 'Solo patrol / Riding single'],
+                    ['10-20', 'Current location'],
+                    ['10-22', 'Disregard last order'],
+                    ['10-23', 'Arrived on scene'],
+                    ['10-41', 'On duty / Starting patrol'],
+                    ['10-42', 'Off duty / Ending patrol'],
+                    ['10-43', 'Information request / Provide update'],
+                    ['10-97', 'En route to ___'],
+                    ['10-98', 'Resuming patrol']
+                ]},
+                { id: 'traffic', title: 'Traffic & Checks', short: 'Traffic', items: [
+                    ['10-11', 'Traffic stop'],
+                    ['10-27', "Driver's license check"],
+                    ['10-28', 'License plate check'],
+                    ['10-29', 'Check for wants / warrants'],
+                    ['10-30', 'Wanted person'],
+                    ['10-50', 'Motor vehicle accident'],
+                    ['10-66', 'Reckless driver'],
+                    ['10-80', 'Vehicle pursuit']
+                ]},
+                { id: 'crime', title: 'Criminal Activity & Incidents', short: 'Criminal', items: [
+                    ['10-10', 'Assault'],
+                    ['10-13', 'Shots fired'],
+                    ['10-14', 'Drug deal / Narcotics activity'],
+                    ['10-15', 'Transporting prisoner to police station'],
+                    ['10-16', 'Stolen vehicle (GTA)'],
+                    ['10-17', 'Suspicious person'],
+                    ['10-60', 'Armed with a firearm'],
+                    ['10-62', 'Kidnapping / Abduction'],
+                    ['10-68', 'Armed robbery'],
+                    ['10-70', 'Foot pursuit (Suspect fleeing)'],
+                    ['10-95', 'Suspect in custody']
+                ]},
+                { id: 'dispatch', title: 'Dispatch & Emergency Assistance', short: 'Dispatch', items: [
+                    ['10-32', 'Backup / Assistance needed'],
+                    ['10-44', 'Deceased person'],
+                    ['10-52', 'EMS / Ambulance required'],
+                    ['10-71', 'Supervisor required on scene'],
+                    ['10-90', 'Officer / Medic reprimand'],
+                    ['10-99', 'OFFICER IN DISTRESS / IMMEDIATE ASSISTANCE NEEDED']
+                ]}
+            ];
+
+            var CODE_MAP = {};
+            CODES.forEach(function (g) { g.items.forEach(function (it) { CODE_MAP[it[0]] = it[1]; }); });
+
+            /* Departments. img = file in the same folder as index.html. */
+            var DEPTS = {
+                police: {
+                    tag: 'PD',
+                    name: 'Police Department',
+                    short: 'City patrol, traffic enforcement, and responding to calls for service.',
+                    img: 'police.jpg',
+                    pos: '50% 30%',
+                    about: 'The Police Department is the everyday face of law enforcement in New Jersey State RP. Officers patrol the city, handle calls for service, run traffic stops, and keep order during sessions — all by the book and over proper radio traffic.',
+                    duties: [
+                        'Patrol assigned areas and respond to calls from dispatch',
+                        'Conduct traffic stops and run license, plate and warrant checks',
+                        'Handle pursuits, foot chases and arrests according to department policy',
+                        'Transport prisoners and keep scenes secure until relieved',
+                        'Call for backup, EMS or a supervisor when a situation needs it'
+                    ],
+                    topCodes: ['10-41', '10-11', '10-28', '10-80', '10-70', '10-95'],
+                    ranks: [],
+                    requirements: []
+                },
+                sheriff: {
+                    tag: 'SO',
+                    name: "Sheriff's Office",
+                    short: 'County-wide patrol, warrants, and backup for every other unit.',
+                    img: 'sheriff.jpg',
+                    pos: '50% 30%',
+                    about: "The Sheriff's Office works alongside the Police Department, covering the wider county and supporting units wherever they're needed. Deputies patrol, follow up on wanted persons, and assist on calls that city officers can't cover alone.",
+                    duties: [
+                        'Patrol county roads and areas outside the city core',
+                        'Back up other departments on active calls',
+                        'Locate and detain wanted persons and check for warrants',
+                        'Transport prisoners and handle custody',
+                        'Enforce traffic law and respond to accidents'
+                    ],
+                    topCodes: ['10-41', '10-29', '10-30', '10-15', '10-32', '10-50'],
+                    ranks: [],
+                    requirements: []
+                },
+                swat: {
+                    tag: 'SWAT',
+                    name: 'SWAT',
+                    short: 'Tactical response to armed and high-risk incidents.',
+                    img: 'swat.jpg',
+                    pos: '50% 35%',
+                    about: 'SWAT is called in when a situation is beyond normal patrol: armed suspects, robberies in progress, and dangerous callouts. Members are expected to be disciplined, communicate clearly, and follow the chain of command.',
+                    duties: [
+                        'Respond to armed and high-risk incidents',
+                        'Support patrol units on armed robberies and armed suspects',
+                        "Work as a coordinated team under a supervisor's direction",
+                        'Secure the scene and hand it back to patrol once it is safe',
+                        'Use force only as policy and the situation allow'
+                    ],
+                    topCodes: ['10-60', '10-68', '10-62', '10-13', '10-32', '10-99'],
+                    ranks: [],
+                    requirements: []
+                },
+                fire: {
+                    tag: 'FIRE',
+                    name: 'Fire Department',
+                    short: 'Fire suppression, rescue, and medical response on scene.',
+                    img: 'fire.jpg',
+                    pos: '50% 40%',
+                    about: 'The New Jersey Fire Department responds when things go wrong — fires, crashes, and medical emergencies. Firefighters and medics work with police to keep scenes safe and get people the help they need.',
+                    duties: [
+                        'Respond to fires and put them out',
+                        'Rescue and extricate people after vehicle accidents',
+                        'Provide medical care and coordinate ambulance transport',
+                        'Keep scenes safe for other responders',
+                        'Stay in contact with dispatch and keep your status updated'
+                    ],
+                    topCodes: ['10-8', '10-23', '10-50', '10-52', '10-44', '10-97'],
+                    ranks: [],
+                    requirements: []
+                }
+            };
+
+            /* =========================================================
+               Render department cards
+               ========================================================= */
+            var deptGrid = document.getElementById('deptGrid');
+            Object.keys(DEPTS).forEach(function (key, i) {
+                var d = DEPTS[key];
+                var b = document.createElement('button');
+                b.type = 'button';
+                b.className = 'card dept-card reveal';
+                b.style.setProperty('--i', i);
+                b.setAttribute('data-dept', key);
+                b.setAttribute('aria-haspopup', 'dialog');
+                b.innerHTML =
+                    '<div class="thumb">' +
+                        '<img src="' + esc(d.img) + '" alt="' + esc(d.name) + ' member in uniform" loading="lazy" decoding="async" style="object-position:' + esc(d.pos) + '">' +
+                        '<span class="tag">' + esc(d.tag) + '</span>' +
+                    '</div>' +
+                    '<div class="info">' +
+                        '<h3>' + esc(d.name) + '</h3>' +
+                        '<p>' + esc(d.short) + '</p>' +
+                        '<span class="more">View details <i>&rarr;</i></span>' +
+                    '</div>';
+                b.addEventListener('click', function () { openDept(key); });
+                deptGrid.appendChild(b);
+            });
+
+            /* =========================================================
+               Department popup
+               ========================================================= */
+            var modal = document.getElementById('deptModal');
+
+            function listBlock(title, arr, cls) {
+                if (!arr || !arr.length) return '';
+                return '<h4>' + title + '</h4><ul class="' + cls + '">' +
+                    arr.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>';
+            }
+
+            function openDept(key) {
+                var d = DEPTS[key];
+                if (!d) return;
+
+                var chips = (d.topCodes || []).map(function (c) {
+                    return '<span class="chip"><b>' + esc(c) + '</b>' + esc(CODE_MAP[c] || '') + '</span>';
+                }).join('');
+
+                modal.innerHTML =
+                    '<button class="modal-close" type="button" data-close aria-label="Close">&times;</button>' +
+                    '<div class="modal-media">' +
+                        '<img src="' + esc(d.img) + '" alt="' + esc(d.name) + ' member in uniform" style="object-position:' + esc(d.pos) + '">' +
+                        '<div class="modal-title"><span class="tag">' + esc(d.tag) + '</span><h2 id="modalTitle">' + esc(d.name) + '</h2></div>' +
+                    '</div>' +
+                    '<div class="modal-body">' +
+                        '<p class="lead">' + esc(d.about) + '</p>' +
+                        listBlock('What you\'ll do', d.duties, 'duty-list') +
+                        (chips ? '<h4>Radio codes you\'ll use most</h4><div class="chips">' + chips + '</div>' : '') +
+                        listBlock('Ranks', d.ranks, 'duty-list') +
+                        listBlock('Requirements', d.requirements, 'duty-list') +
+                        '<p class="modal-note">Ask in the Discord for current ranks, requirements and how to apply.</p>' +
+                        '<div class="modal-actions">' +
+                            '<a class="btn btn-primary" href="' + DISCORD + '" target="_blank" rel="noopener">Join the Discord</a>' +
+                            '<button class="btn btn-secondary" type="button" data-goto-codes>View all 10-codes</button>' +
+                        '</div>' +
+                    '</div>';
+
+                modal.classList.remove('closing');
+                if (!modal.open) modal.showModal();
+                document.documentElement.classList.add('no-scroll');
+                try { history.replaceState(null, '', '#dept-' + key); } catch (e) {}
+            }
+
+            function closeModal(after) {
+                if (!modal.open) { if (after) after(); return; }
+                if (modal.classList.contains('closing')) return;
+                function done() {
+                    modal.classList.remove('closing');
+                    modal.close();
+                    if (after) after();
+                }
+                if (reduce) { done(); return; }
+                modal.classList.add('closing');
+                setTimeout(done, 180);
+            }
+
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal || e.target.hasAttribute('data-close')) {
+                    closeModal();
+                } else if (e.target.hasAttribute('data-goto-codes')) {
+                    closeModal(function () {
+                        document.getElementById('codes').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
+                    });
+                }
+            });
+
+            modal.addEventListener('cancel', function (e) {
+                e.preventDefault();
+                closeModal();
+            });
+
+            modal.addEventListener('close', function () {
+                document.documentElement.classList.remove('no-scroll');
+                try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+            });
+
+            /* Open straight to a department from a shared link, e.g. index.html#dept-fire */
+            (function () {
+                var h = location.hash || '';
+                if (h.indexOf('#dept-') === 0) {
+                    var k = h.slice(6);
+                    if (DEPTS[k]) setTimeout(function () { openDept(k); }, 350);
+                }
+            })();
+
+            /* =========================================================
+               10-codes: search + category tabs
+               ========================================================= */
+            var codesOut = document.getElementById('codesOut');
+            var codeCount = document.getElementById('codeCount');
+            var codeSearch = document.getElementById('codeSearch');
+            var codeTabs = document.getElementById('codeTabs');
+            var activeTab = 'all';
+
+            function buildTabs() {
+                var tabs = [{ id: 'all', label: 'All' }].concat(CODES.map(function (g) { return { id: g.id, label: g.short }; }));
+                codeTabs.innerHTML = tabs.map(function (t) {
+                    return '<button type="button" class="tab' + (t.id === activeTab ? ' active' : '') + '" data-tab="' + t.id + '" aria-pressed="' + (t.id === activeTab) + '">' + esc(t.label) + '</button>';
+                }).join('');
+            }
+
+            function renderCodes() {
+                var q = codeSearch.value.trim().toLowerCase();
+                var qc = q.replace(/[\s-]/g, '');
+                var total = 0, shown = 0, idx = 0, html = '';
+
+                CODES.forEach(function (g) {
+                    total += g.items.length;
+                    if (activeTab !== 'all' && activeTab !== g.id) return;
+                    var matches = g.items.filter(function (it) {
+                        if (!q) return true;
+                        var h = (it[0] + ' ' + it[1]).toLowerCase();
+                        return h.indexOf(q) !== -1 || h.replace(/[\s-]/g, '').indexOf(qc) !== -1;
+                    });
+                    if (!matches.length) return;
+                    shown += matches.length;
+                    html += '<h3 class="code-group">' + esc(g.title) + ' <small>' + matches.length + '</small></h3><div class="codes-grid">' +
+                        matches.map(function (it) {
+                            var d = Math.min(idx++, 30);
+                            return '<div class="code' + (it[0] === '10-99' ? ' urgent' : '') + '" style="--d:' + d + '">' +
+                                '<span class="c">' + esc(it[0]) + '</span><span class="d">' + esc(it[1]) + '</span></div>';
+                        }).join('') + '</div>';
+                });
+
+                if (!shown) html = '<p class="no-codes">No codes match &ldquo;' + esc(codeSearch.value.trim()) + '&rdquo;.</p>';
+                codesOut.innerHTML = html;
+                codeCount.textContent = q || activeTab !== 'all'
+                    ? 'Showing ' + shown + ' of ' + total + ' codes'
+                    : total + ' codes';
+            }
+
+            codeTabs.addEventListener('click', function (e) {
+                var t = e.target.closest('[data-tab]');
+                if (!t) return;
+                activeTab = t.getAttribute('data-tab');
+                buildTabs();
+                renderCodes();
+            });
+            codeSearch.addEventListener('input', renderCodes);
+            buildTabs();
+            renderCodes();
+
+            /* =========================================================
+               Page effects
+               ========================================================= */
 
             /* Mobile menu */
             var toggle = document.getElementById('navToggle');
@@ -828,7 +1529,7 @@
             }
             if (reduce) { typed.textContent = phrases[0]; } else { setTimeout(tick, 900); }
 
-            /* Scroll reveal + section title underline */
+            /* Scroll reveal */
             var els = document.querySelectorAll('.reveal');
             if ('IntersectionObserver' in window) {
                 var io = new IntersectionObserver(function (entries) {
